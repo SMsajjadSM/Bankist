@@ -87,8 +87,30 @@ const creatUserName = acc => {
   });
 };
 
-creatUserName(accounts);
-console.log(accounts);
+const calcPrintBalanc = movements => {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} €`;
+
+  const SumEur = movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${SumEur} €`;
+
+  const outEur = movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(outEur)} €`;
+
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(mov => (mov * 1.2) / 100)
+    .filter(mov => mov >= 1)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumInterest.textContent = `${interest} €`;
+  console.log(interest);
+};
+calcPrintBalanc(account1.movements);
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
