@@ -75,7 +75,6 @@ const displayMovments = movement => {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovments(account1.movements);
 
 const creatUserName = acc => {
   acc.forEach(acc => {
@@ -86,31 +85,52 @@ const creatUserName = acc => {
       .join('');
   });
 };
+creatUserName(accounts);
 
-const calcPrintBalanc = movements => {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+const calcPrintBalanc = acc => {
+  const balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${balance} €`;
 
-  const SumEur = movements
+  const SumEur = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${SumEur} €`;
 
-  const outEur = movements
+  const outEur = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(outEur)} €`;
 
-  const interest = movements
+  const interest = acc.movements
     .filter(mov => mov > 0)
-    .map(mov => (mov * 1.2) / 100)
+    .map(mov => (mov * acc.interestRate) / 100)
     .filter(mov => mov >= 1)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumInterest.textContent = `${interest} €`;
   console.log(interest);
 };
-calcPrintBalanc(account1.movements);
 
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.userName === inputLoginUsername.value
+  );
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    labelWelcome.textContent = `Welcom Back ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+    displayMovments(currentAccount.movements);
+    calcPrintBalanc(currentAccount);
+  } else {
+    console.log(false);
+  }
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
