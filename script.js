@@ -88,8 +88,8 @@ const creatUserName = acc => {
 creatUserName(accounts);
 
 const calcPrintBalanc = acc => {
-  const balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} €`;
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance} €`;
 
   const SumEur = acc.movements
     .filter(mov => mov > 0)
@@ -107,7 +107,6 @@ const calcPrintBalanc = acc => {
     .filter(mov => mov >= 1)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumInterest.textContent = `${interest} €`;
-  console.log(interest);
 };
 
 let currentAccount;
@@ -131,6 +130,52 @@ btnLogin.addEventListener('click', function (e) {
     console.log(false);
   }
 });
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const accountToTransfer = accounts.find(
+    acc => acc.userName === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = '';
+  if (
+    amount > 0 &&
+    amount <= currentAccount.balance &&
+    accountToTransfer &&
+    accountToTransfer?.userName !== currentAccount.userName
+  ) {
+    currentAccount.movements.push(-amount);
+    accountToTransfer.movements.push(amount);
+    calcPrintBalanc(currentAccount);
+    displayMovments(currentAccount.movements);
+  }
+});
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  let amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    calcPrintBalanc(currentAccount);
+    displayMovments(currentAccount.movements);
+  }
+  inputLoanAmount.value = '';
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.userName &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    inputClosePin.value = inputCloseUsername.value = '';
+    let indexOfDel = accounts.findIndex(
+      acc => acc.userName === currentAccount.userName
+    );
+    accounts.splice(indexOfDel, 1);
+    containerApp.style.opacity = 0;
+  }
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
