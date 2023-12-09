@@ -6,14 +6,14 @@
 
 // Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'Sajjad Siadati',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'Amir Hoesein',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -72,7 +72,7 @@ const displayMovments = (movement, sorted = false) => {
       INDEX + 1
     } ${type}</div>
           <div class="movements__date">3 days ago</div>
-          <div class="movements__value">${MOV}€</div>
+          <div class="movements__value">${MOV.toFixed(2)}€</div>
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -91,24 +91,24 @@ creatUserName(accounts);
 
 const calcPrintBalanc = acc => {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance} €`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)} €`;
 
   const SumEur = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${SumEur} €`;
+  labelSumIn.textContent = `${SumEur.toFixed(2)} €`;
 
   const outEur = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(outEur)} €`;
+  labelSumOut.textContent = `${Math.abs(outEur).toFixed(2)} €`;
 
   const interest = acc.movements
     .filter(mov => mov > 0)
     .map(mov => (mov * acc.interestRate) / 100)
     .filter(mov => mov >= 1)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumInterest.textContent = `${interest} €`;
+  labelSumInterest.textContent = `${interest.toFixed(2)} €`;
 };
 
 let currentAccount;
@@ -119,7 +119,7 @@ btnLogin.addEventListener('click', function (e) {
     acc => acc.userName === inputLoginUsername.value
   );
 
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+  if (currentAccount?.pin === +inputLoginPin.value) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
     labelWelcome.textContent = `Welcom Back ${
@@ -135,7 +135,7 @@ btnLogin.addEventListener('click', function (e) {
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const accountToTransfer = accounts.find(
     acc => acc.userName === inputTransferTo.value
   );
@@ -154,7 +154,7 @@ btnTransfer.addEventListener('click', function (e) {
 });
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  let amount = Number(inputLoanAmount.value);
+  let amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     currentAccount.movements.push(amount);
     calcPrintBalanc(currentAccount);
@@ -167,7 +167,7 @@ btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   if (
     inputCloseUsername.value === currentAccount.userName &&
-    Number(inputClosePin.value) === currentAccount.pin
+    +inputClosePin.value === currentAccount.pin
   ) {
     inputClosePin.value = inputCloseUsername.value = '';
     let indexOfDel = accounts.findIndex(
