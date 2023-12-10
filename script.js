@@ -23,7 +23,7 @@ const account1 = {
     '2020-07-12T10:51:36.790Z',
   ],
   currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+  // locale: 'pt-PT', // de-DE
 };
 
 const account2 = {
@@ -43,7 +43,7 @@ const account2 = {
     '2020-07-26T12:01:20.894Z',
   ],
   currency: 'USD',
-  locale: 'en-US',
+  // locale: 'en-US',
 };
 
 const accounts = [account1, account2];
@@ -73,7 +73,17 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
-
+const local = navigator.language;
+const now = new Date();
+const option = {
+  hour: 'numeric',
+  minute: 'numeric',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  weekday: 'long',
+};
+labelDate.textContent = new Intl.DateTimeFormat(local, option).format(now);
 const formatmovmentsdate = date => {
   {
     const calcDayspassed = (date1, date2) =>
@@ -82,10 +92,10 @@ const formatmovmentsdate = date => {
     if (dayspass === 0) return 'Today';
     if (dayspass === 1) return 'Yesterday';
     if (dayspass <= 7) return `${dayspass} days ago`;
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    return `${year}/${month}/${day}`;
+    // const year = date.getFullYear();
+    // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    // const day = `${date.getDate()}`.padStart(2, 0);
+    return new Intl.DateTimeFormat(local).format(date);
   }
 };
 const displayMovments = (acc, sorted = false) => {
@@ -96,7 +106,7 @@ const displayMovments = (acc, sorted = false) => {
   containerMovements.innerHTML = '';
   movs.forEach((MOV, INDEX) => {
     const date = new Date(acc.movementsDates[INDEX]);
-    const displayDate = formatmovmentsdate(date);
+    const displayDate = formatmovmentsdate(date, local);
     const type = MOV > 0 ? 'deposit' : 'withdrawal';
     const html = ` <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
@@ -160,8 +170,6 @@ btnLogin.addEventListener('click', function (e) {
     containerApp.style.opacity = 100;
     displayMovments(currentAccount);
     calcPrintBalanc(currentAccount);
-  } else {
-    console.log(false);
   }
 });
 
@@ -220,14 +228,14 @@ btnSort.addEventListener('click', function (e) {
   displayMovments(currentAccount, !sorted);
   sorted = !sorted;
 });
-const now = new Date();
-const year = now.getFullYear();
-const month = `${now.getMonth() + 1}`.padStart(2, 0);
-const day = `${now.getDate()}`.padStart(2, 0);
-const hour = `${now.getHours()}`.padStart(2, 0);
-const min = `${now.getMinutes()}`.padStart(2, 0);
+// const now = new Date();
+// const year = now.getFullYear();
+// const month = `${now.getMonth() + 1}`.padStart(2, 0);
+// const day = `${now.getDate()}`.padStart(2, 0);
+// const hour = `${now.getHours()}`.padStart(2, 0);
+// const min = `${now.getMinutes()}`.padStart(2, 0);
 
-labelDate.textContent = `${year}/${month}/${day}, ${hour}:${min}`;
+// labelDate.textContent = `${year}/${month}/${day}, ${hour}:${min}`;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
