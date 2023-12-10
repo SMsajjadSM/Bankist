@@ -23,7 +23,7 @@ const account1 = {
     '2020-07-12T10:51:36.790Z',
   ],
   currency: 'EUR',
-  // locale: 'pt-PT', // de-DE
+  locale: 'pt-PT', // de-DE
 };
 
 const account2 = {
@@ -43,7 +43,7 @@ const account2 = {
     '2020-07-26T12:01:20.894Z',
   ],
   currency: 'USD',
-  // locale: 'en-US',
+  locale: 'en-US',
 };
 
 const accounts = [account1, account2];
@@ -74,6 +74,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 const local = navigator.language;
+let changevlue;
 const now = new Date();
 const option = {
   hour: 'numeric',
@@ -84,6 +85,13 @@ const option = {
   weekday: 'long',
 };
 labelDate.textContent = new Intl.DateTimeFormat(local, option).format(now);
+const formatingmovments = function (MOV, currency, local) {
+  return new Intl.NumberFormat(local, {
+    style: 'currency',
+    currency: currency,
+  }).format(MOV);
+};
+
 const formatmovmentsdate = date => {
   {
     const calcDayspassed = (date1, date2) =>
@@ -92,9 +100,6 @@ const formatmovmentsdate = date => {
     if (dayspass === 0) return 'Today';
     if (dayspass === 1) return 'Yesterday';
     if (dayspass <= 7) return `${dayspass} days ago`;
-    // const year = date.getFullYear();
-    // const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    // const day = `${date.getDate()}`.padStart(2, 0);
     return new Intl.DateTimeFormat(local).format(date);
   }
 };
@@ -108,13 +113,18 @@ const displayMovments = (acc, sorted = false) => {
     const date = new Date(acc.movementsDates[INDEX]);
     const displayDate = formatmovmentsdate(date, local);
     const type = MOV > 0 ? 'deposit' : 'withdrawal';
+
     const html = ` <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
       INDEX + 1
     } ${type}</div>
     
           <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${MOV.toFixed(2)}€</div>
+          <div class="movements__value">${formatingmovments(
+            MOV,
+            currentAccount.currency,
+            currentAccount.locale
+          )}</div>
         </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -133,24 +143,40 @@ creatUserName(accounts);
 
 const calcPrintBalanc = acc => {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)} €`;
+  labelBalance.textContent = `${formatingmovments(
+    acc.balance,
+    currentAccount.currency,
+    currentAccount.locale
+  )}`;
 
   const SumEur = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${SumEur.toFixed(2)} €`;
+  labelSumIn.textContent = `${formatingmovments(
+    SumEur,
+    currentAccount.currency,
+    currentAccount.locale
+  )}`;
 
   const outEur = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(outEur).toFixed(2)} €`;
+  labelSumOut.textContent = `${formatingmovments(
+    Math.abs(outEur),
+    currentAccount.currency,
+    currentAccount.locale
+  )}`;
 
   const interest = acc.movements
     .filter(mov => mov > 0)
     .map(mov => (mov * acc.interestRate) / 100)
     .filter(mov => mov >= 1)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)} €`;
+  labelSumInterest.textContent = `${formatingmovments(
+    interest,
+    currentAccount.currency,
+    currentAccount.locale
+  )}`;
 };
 
 let currentAccount;
@@ -228,14 +254,6 @@ btnSort.addEventListener('click', function (e) {
   displayMovments(currentAccount, !sorted);
   sorted = !sorted;
 });
-// const now = new Date();
-// const year = now.getFullYear();
-// const month = `${now.getMonth() + 1}`.padStart(2, 0);
-// const day = `${now.getDate()}`.padStart(2, 0);
-// const hour = `${now.getHours()}`.padStart(2, 0);
-// const min = `${now.getMinutes()}`.padStart(2, 0);
-
-// labelDate.textContent = `${year}/${month}/${day}, ${hour}:${min}`;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
