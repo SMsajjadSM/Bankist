@@ -74,7 +74,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 const local = navigator.language;
-let changevlue;
+
 const now = new Date();
 const option = {
   hour: 'numeric',
@@ -178,8 +178,24 @@ const calcPrintBalanc = acc => {
     currentAccount.locale
   )}`;
 };
-
-let currentAccount;
+const settimeLogin = function () {
+  const tick = () => {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+    labelTimer.textContent = `${min}:${sec}`;
+    if (time === 0) {
+      labelWelcome.textContent = 'Log in to get started';
+      containerApp.style.opacity = 0;
+      clearInterval(timer);
+    }
+    time--;
+  };
+  let time = 300;
+  tick();
+  timer = setInterval(tick, 1000);
+  return timer;
+};
+let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -196,6 +212,8 @@ btnLogin.addEventListener('click', function (e) {
     containerApp.style.opacity = 100;
     displayMovments(currentAccount);
     calcPrintBalanc(currentAccount);
+    if (timer) clearInterval(timer);
+    timer = settimeLogin();
   }
 });
 
@@ -219,6 +237,8 @@ btnTransfer.addEventListener('click', function (e) {
     accountToTransfer.movementsDates.push(new Date().toISOString());
     calcPrintBalanc(currentAccount);
     displayMovments(currentAccount);
+    clearInterval(timer);
+    timer = settimeLogin();
   }
 });
 btnLoan.addEventListener('click', function (e) {
@@ -233,6 +253,8 @@ btnLoan.addEventListener('click', function (e) {
     }, 2500);
   }
   inputLoanAmount.value = '';
+  clearInterval(timer);
+  timer = settimeLogin();
 });
 
 btnClose.addEventListener('click', function (e) {
@@ -255,11 +277,9 @@ btnSort.addEventListener('click', function (e) {
 
   displayMovments(currentAccount, !sorted);
   sorted = !sorted;
+  // clearInterval(timer);
+  // timer = settimeLogin();
 });
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
 
 const currencies = new Map([
   ['USD', 'United States dollar'],
@@ -268,5 +288,3 @@ const currencies = new Map([
 ]);
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////////////////////////////////////////
