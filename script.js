@@ -225,10 +225,12 @@ btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
   let amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    currentAccount.movements.push(amount);
-    currentAccount.movementsDates.push(new Date().toISOString());
-    calcPrintBalanc(currentAccount);
-    displayMovments(currentAccount);
+    setTimeout(() => {
+      currentAccount.movements.push(amount);
+      currentAccount.movementsDates.push(new Date().toISOString());
+      calcPrintBalanc(currentAccount);
+      displayMovments(currentAccount);
+    }, 2500);
   }
   inputLoanAmount.value = '';
 });
