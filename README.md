@@ -32,6 +32,7 @@ Install the dependencies and devDependencies
 ```plaintext
 npm i
 ```
+#### userName : ss   &   password : 1111
 
 #### How to support?
 
