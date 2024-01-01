@@ -4,9 +4,8 @@
 
 [Demo of Bankist](https://smsajjadsm.github.io/Bankist/)
 
-![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/4cf99f0f8cd6756594fd08196563240cddff17a5aea6af57.png)
-
-![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/71a382ffb550d61cea12dc459675e2cdfa10a9677f782aa2.png)
+![plot](./IMG/1.png)
+![plot](./IMG/2.png)
 
 Features
 
